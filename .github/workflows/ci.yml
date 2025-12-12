@@ -1,15 +1,15 @@
-name: Task 2 EDA CI
+name: Task 1  Environment Setup
 
 on:
   push:
     branches:
-      - task-2
+      - task-1
   pull_request:
     branches:
-      - task-2
+      - task-1
 
 jobs:
-  setup-and-test:
+  setup-env:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,3 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Run sample notebook (check for errors)
-        run: |
-          jupyter nbconvert --to notebook --execute notebooks/eda.ipynb --ExecutePreprocessor.timeout=300 --output executed_eda.ipynb
