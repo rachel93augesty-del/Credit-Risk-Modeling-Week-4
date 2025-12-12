@@ -1,5 +1,5 @@
 "Credit Scoring Business Understanding." 
-the followings in detail showed why we need to do this project
+
 Building a credit risk model requires balancing predictive performance, interpretability, and regulatory compliance. The Basel II Accord emphasizes accurate risk measurement, transparency, and the ability to justify model decisions. This means the credit scoring model must be interpretable, auditable, and well-documented, allowing risk teams, auditors, and regulators to understand how customer attributes influence predicted risk. Models that are opaque or difficult to explain increase regulatory scrutiny and reduce trust in automated credit decisions.
 
 Because the dataset does not contain a true default label, creating a proxy variable is necessary to approximate risk behavior. Using RFM metrics and clustering helps identify disengaged or low-value customers who may represent higher credit risk. However, relying on a proxy introduces business risks: misclassification of good customers as high risk may reduce loan approvals and revenue, while incorrectly labeling risky customers as low risk can increase credit losses. Clear documentation of how the proxy is defined and its limitations is essential to avoid misleading decision-makers.
