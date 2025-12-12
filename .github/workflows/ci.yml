@@ -6,13 +6,13 @@ on:
       - main
       - task-1
       - task-2
-      - add-eda-insights
+      - task-3        # ← new Task 3 branch added
   pull_request:
     branches:
       - main
       - task-1
       - task-2
-      - add-eda-insights
+      - task-3        # ← new Task 3 branch added
 
 jobs:
   setup-env:
