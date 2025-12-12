@@ -1,14 +1,18 @@
-name: Python Environment Setup
+name: CI Workflow
 
 on:
   push:
     branches:
+      - main
       - task-1
       - task-2
+      - add-eda-insights
   pull_request:
     branches:
+      - main
       - task-1
       - task-2
+      - add-eda-insights
 
 jobs:
   setup-env:
@@ -28,3 +32,10 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Run Python scripts / tests
+        run: |
+          echo "Running tests or scripts here..."
+          # Example: python -m unittest discover tests
+          # Or run a simple sanity check:
+          python -c "import pandas, numpy, matplotlib, seaborn; print('Packages loaded successfully')"
