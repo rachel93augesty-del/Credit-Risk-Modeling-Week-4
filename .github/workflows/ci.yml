@@ -1,12 +1,14 @@
-name: Task 1  Environment Setup
+name: Python Environment Setup
 
 on:
   push:
     branches:
       - task-1
+      - task-2
   pull_request:
     branches:
       - task-1
+      - task-2
 
 jobs:
   setup-env:
