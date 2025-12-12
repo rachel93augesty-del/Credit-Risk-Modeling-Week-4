@@ -1,40 +1,25 @@
-# Data processing
-pandas>=2.1.0
-numpy>=1.25.0
-scikit-learn>=1.3.0
-scipy>=1.11.0
+# Core Data & ML packages
+pandas>=2.1.0,<2.4
+numpy>=1.25.0,<2.0
+scikit-learn>=1.3.0,<1.9
+scipy>=1.11.0,<1.17
 
-# RFM and clustering
-scikit-learn>=1.3.0
+# Clustering & feature engineering
 kmeans-pytorch>=0.2.0
 xverse>=0.1.8
-woe>=1.0.0
+woe==0.1.4  # compatible with Python 3.10
 
-# ML models
-xgboost>=1.7.6
-lightgbm>=4.3.4
+# MLOps & model tracking
+mlflow
 
-# Experiment tracking
-mlflow>=2.9.1
+# API & serving
+fastapi
+uvicorn
 
-# API & Validation
-fastapi>=0.111.0
-uvicorn>=0.23.1
-pydantic>=2.5.1
+# Testing & code quality
+pytest
+flake8
 
-# Unit testing & CI/CD
-pytest>=8.2.2
-flake8>=7.1.0
-
-# Logging
-loguru>=0.7.0
-
-# Visualization
-matplotlib>=3.8.0
-seaborn>=0.12.2
-plotly>=5.17.0
-
-# Notebook
-jupyter>=2.6.0
-notebook>=7.3.2
-ipykernel>=6.26.0
+# Optional visualization for EDA
+matplotlib
+seaborn
