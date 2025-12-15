@@ -1,6 +1,7 @@
- task-3
+ #task-3
 # src/preprocessing.py
 
+from pdb import main
 import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -275,4 +276,6 @@ def get_numeric_columns(df):
 
 def get_categorical_columns(df):
     return df.select_dtypes(include='object').columns.tolist()
- main
+main
+
+
