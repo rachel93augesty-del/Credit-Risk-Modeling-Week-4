@@ -1,0 +1,42 @@
+# Create .gitignore
+@'
+# Data files (large, generated - DO NOT COMMIT)
+data/
+*.csv
+*.xlsx
+*.parquet
+*.pkl
+*.pickle
+
+# MLflow artifacts
+mlflow.db
+mlruns/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Output directories
+output/
+models/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment
+venv/
+.env
+.venv
+
+# W&B
+wandb/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+'@ | Out-File -FilePath .gitignore -Encoding UTF8
+
