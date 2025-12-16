@@ -7,12 +7,16 @@ on:
       - task-1
       - task-2
       - task-3
+      - task-4
+      - task-5
   pull_request:
     branches:
       - main
       - task-1
       - task-2
       - task-3
+      - task-4
+      - task-5
 
 jobs:
   setup-env:
@@ -43,5 +47,8 @@ jobs:
 
       - name: Run sanity checks
         run: |
-          python -c "import pandas, numpy, sklearn; print('Core ML packages OK')"
+          python -c "import pandas, numpy, sklearn, mlflow, xgboost, lightgbm, joblib, pytest, scipy; print('All Task 5 packages OK')"
           python -c "import src; print('Project structure OK')"
+
+      - name: Run unit tests
+        run: pytest -v tests/
