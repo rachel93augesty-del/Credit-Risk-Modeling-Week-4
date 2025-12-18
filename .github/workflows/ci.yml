@@ -24,7 +24,17 @@ jobs:
           python-version: 3.11
 
       - name: Install dependencies
-        run: pip install --upgrade pip && pip install -r requirements.txt
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8
+
+      - name: Run linter
+        run: |
+          echo "Running flake8..."
+          flake8 src/ tests/ --max-line-length=120
 
       - name: Run tests
-        run: pytest tests/ --maxfail=1 --disable-warnings
+        run: |
+          echo "Running pytest..."
+          pytest tests/ --maxfail=1 --disable-warnings
