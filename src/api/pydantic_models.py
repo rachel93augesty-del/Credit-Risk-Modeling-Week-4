@@ -1,5 +1,5 @@
-# src/api/pydantic_models.py
 from pydantic import BaseModel, Field
+
 
 class CreditRiskInput(BaseModel):
     Amount: float = Field(..., gt=0, description="Transaction amount")
@@ -9,6 +9,7 @@ class CreditRiskInput(BaseModel):
     ProviderId: str = Field(..., description="Provider ID")
     ProductCategory: str = Field(..., description="Category of the product")
     ChannelId: str = Field(..., description="Sales channel, e.g., Online")
+
 
 class CreditRiskOutput(BaseModel):
     risk_label: int = Field(..., description="Predicted label: 0 = Low Risk, 1 = High Risk")
