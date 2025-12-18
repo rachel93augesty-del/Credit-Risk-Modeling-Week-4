@@ -1,19 +1,21 @@
-name: Task 6 CI
+name: Credit Risk CI Pipeline
 
 on:
   push:
     branches:
+      - main
       - task-6
   pull_request:
     branches:
+      - main
       - task-6
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -22,7 +24,7 @@ jobs:
           python-version: 3.11
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --upgrade pip && pip install -r requirements.txt
 
-      - name: Confirm setup
-        run: echo "Dependencies installed and workflow is running!"
+      - name: Run tests
+        run: pytest tests/ --maxfail=1 --disable-warnings

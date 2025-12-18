@@ -3,13 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
-# Virtual environments
+# Virtual environment
 venv/
-ENV/
 env/
+.venv/
 
 # Distribution / packaging
 build/
@@ -18,55 +15,27 @@ dist/
 *.egg
 *.whl
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-
-# Jupyter Notebook checkpoints and outputs
+# Jupyter notebooks checkpoints
 .ipynb_checkpoints/
-*.ipynb
-*.csv
-*.tsv
-*.xlsx
-*.xls
-*.html
-*.pdf
 
-# Logs and database files
-*.log
-*.sql
-*.sqlite
-*.db
+# Data and model outputs
+data/
+output/
+saved_models/
 mlruns/
 mlartifacts/
 wandb/
-output/
-saved_models/
 
-# IDEs and editors
+# Logs and temp files
+*.log
+*.tmp
+
+# IDE/editor settings
 .vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
 
-# System files
+# OS files
 .DS_Store
 Thumbs.db
-
-# Docker
-*.env
-*.dockerfile
-docker-compose.override.yml
