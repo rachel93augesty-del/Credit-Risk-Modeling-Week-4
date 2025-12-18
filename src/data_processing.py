@@ -12,24 +12,20 @@ import scorecardpy as sc  # For WoE encoding
 # ---------------------------
 
 def get_numeric_columns(df: pd.DataFrame):
-    """Return list of numeric columns."""
-    return df.select_dtypes(include=["int64", "float64"]).columns.tolist()
+    """Return list of numeric column names."""
+    return df.select_dtypes(include=["number"]).columns.tolist()
 
 
 def get_categorical_columns(df: pd.DataFrame):
-    """Return list of categorical columns."""
+    """Return list of categorical column names."""
     return df.select_dtypes(include=["object", "category"]).columns.tolist()
 
 
-def detect_outliers(df: pd.DataFrame, column: str, method="iqr"):
-    """Detect outliers in a numeric column."""
-    if method == "iqr":
-        Q1 = df[column].quantile(0.25)
-        Q3 = df[column].quantile(0.75)
-        IQR = Q3 - Q1
-        return df[(df[column] < Q1 - 1.5 * IQR) | (df[column] > Q3 + 1.5 * IQR)]
-    else:
-        raise ValueError("Unsupported method. Use 'iqr'.")
+def detect_outliers(df: pd.DataFrame, column: str, threshold: float = 3.0):
+    """Return a boolean mask where True indicates an outlier based on z-score."""
+    mean_val = df[column].mean()
+    std_val = df[column].std()
+    return ((df[column] - mean_val).abs() > threshold * std_val)
 
 
 # ---------------------------
@@ -59,7 +55,6 @@ class AggregateFeatures(BaseEstimator, TransformerMixin):
             )
             .reset_index()
         )
-        agg_df["std_amount"] = agg_df["std_amount"].fillna(0)
         return agg_df
 
 
@@ -92,7 +87,7 @@ class WoEEncoder(BaseEstimator, TransformerMixin):
     def fit(self, X, y=None):
         df = X.copy()
         df[self.target] = y
-        cat_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
+        cat_cols = get_categorical_columns(df)
         self.woe_bins = sc.woebin(df, y=self.target, x=cat_cols)
         return self
 
@@ -104,16 +99,17 @@ class WoEEncoder(BaseEstimator, TransformerMixin):
 # Preprocessing Pipeline
 # ---------------------------
 
-def build_preprocessing_pipeline(numeric_features, categorical_features, date_feature="TransactionStartTime"):
-    """Builds a full preprocessing pipeline including numeric, categorical, and date features."""
+def build_preprocessing_pipeline(
+    numeric_features, categorical_features, date_feature="TransactionStartTime"
+):
+    """Builds a full preprocessing pipeline for feature engineering."""
 
+    # Numeric pipeline: impute + scale
     numeric_pipeline = Pipeline(
-        steps=[
-            ("imputer", SimpleImputer(strategy="median")),
-            ("scaler", StandardScaler()),
-        ]
+        steps=[("imputer", SimpleImputer(strategy="median")), ("scaler", StandardScaler())]
     )
 
+    # Categorical pipeline: impute + One-Hot
     categorical_pipeline = Pipeline(
         steps=[
             ("imputer", SimpleImputer(strategy="most_frequent")),
@@ -121,6 +117,7 @@ def build_preprocessing_pipeline(numeric_features, categorical_features, date_fe
         ]
     )
 
+    # Combine numeric & categorical pipelines
     preprocessor = ColumnTransformer(
         transformers=[
             ("num", numeric_pipeline, numeric_features),
@@ -128,11 +125,9 @@ def build_preprocessing_pipeline(numeric_features, categorical_features, date_fe
         ]
     )
 
+    # Full pipeline including date features
     full_pipeline = Pipeline(
-        steps=[
-            ("date_features", DateFeatures(date_col=date_feature)),
-            ("preprocessor", preprocessor),
-        ]
+        steps=[("date_features", DateFeatures(date_col=date_feature)), ("preprocessor", preprocessor)]
     )
 
     return full_pipeline
@@ -144,26 +139,11 @@ def build_preprocessing_pipeline(numeric_features, categorical_features, date_fe
 
 if __name__ == "__main__":
     df = pd.read_csv("../data/transactions.csv")
+
     numeric_features = ["Amount", "Value"]
     categorical_features = ["CurrencyCode", "CountryCode", "ProviderId", "ProductCategory", "ChannelId"]
 
     pipeline = build_preprocessing_pipeline(numeric_features, categorical_features)
     df_transformed = pipeline.fit_transform(df)
-    print("Transformed shape:", df_transformed.shape)
 
-# Helper functions
-def get_numeric_columns(df):
-    """Return numeric columns of a DataFrame."""
-    return df.select_dtypes(include="number").columns.tolist()
-
-def get_categorical_columns(df):
-    """Return categorical columns of a DataFrame."""
-    return df.select_dtypes(include="object").columns.tolist()
-
-def detect_outliers(df, column):
-    """Return indices of outliers in a numeric column using IQR method."""
-    Q1 = df[column].quantile(0.25)
-    Q3 = df[column].quantile(0.75)
-    IQR = Q3 - Q1
-    outliers = df[(df[column] < Q1 - 1.5 * IQR) | (df[column] > Q3 + 1.5 * IQR)].index
-    return outliers
+    print(df_transformed.shape)
