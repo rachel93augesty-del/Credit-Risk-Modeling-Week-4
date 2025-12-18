@@ -17,3 +17,6 @@ pydantic==2.12.5
 # Code quality & CI/CD
 flake8==7.3.0
 black==25.12.0
+# Testing
+pytest==9.0.2
+
