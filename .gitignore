@@ -1,0 +1,54 @@
+# =====================
+# Data files
+# =====================
+data/
+*.csv
+*.tsv
+*.parquet
+*.xlsx
+*.xls
+
+# =====================
+# Python
+# =====================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+*.log
+
+# Virtual environment
+venv/
+
+# =====================
+# Jupyter
+# =====================
+notebooks/.ipynb_checkpoints/
+
+# =====================
+# MLflow / outputs
+# =====================
+output/
+saved_models/
+mlartifacts/
+mlruns/
+
+# =====================
+# Images
+# =====================
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.bmp
+*.tiff
+
+# =====================
+# IDE / OS
+# =====================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
