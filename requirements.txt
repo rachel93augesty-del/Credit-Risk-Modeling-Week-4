@@ -1,22 +1,9 @@
-# Core packages for data analysis
+numpy>=2.3.0,<2.4
 pandas>=2.1.0,<2.4
-numpy>=1.25.0,<1.27
-matplotlib>=3.7.0
-seaborn>=0.12.2
-jupyter>=1.0.0
-openpyxl>=3.1.2   # if working with Excel files
 scikit-learn>=1.3.2
 xverse>=1.0.1
 woe>=0.1.0
-
-# Deployment & API packages (Task 6)
-fastapi==0.125.0
-uvicorn[standard]==0.38.0
-pydantic==2.12.5
-
-# Code quality & CI/CD
-flake8==7.3.0
-black==25.12.0
-# Testing
-pytest==9.0.2
-
+fastapi==0.111.0
+uvicorn==0.23.1
+flake8==7.3.0   # optional, for linting
+black==25.12.0  # optional, for formatting
