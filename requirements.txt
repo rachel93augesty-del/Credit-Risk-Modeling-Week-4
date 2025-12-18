@@ -1,12 +1,24 @@
 # Core packages for data analysis
+ task-5-clean
 pandas>=2.3.3
 numpy>=1.24.4
 matplotlib>=3.7.0
 seaborn>=0.12.2
 scikit-learn>=1.3.2
 
+pandas>=2.3.0,<2.4
+numpy>=1.25.0,<1.26
+matplotlib>=3.7.0
+seaborn>=0.12.2
+scikit-learn>=1.3.2
+openpyxl>=3.1.2   # only if working with Excel files
+ main
+
 # Task 5 additions
 mlflow==3.7.0
 pytest>=8.2.0
+ task-5-clean
 pytest-timeout>=2.4.0
+
+ main
 

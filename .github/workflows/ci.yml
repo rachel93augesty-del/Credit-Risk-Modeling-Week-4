@@ -1,3 +1,7 @@
+ task-5
+name: Task 5 - Model Training
+on: push
+
 name: Credit Risk CI Pipeline
 
 on:
@@ -15,20 +19,27 @@ on:
       - task-1
       - task-2
       - task-3
+task-5-clean
       - task-4
       - task-5-clean   # added Task 5 branch
 
+      - task-4   # added task-4
+ main
+main
+
 jobs:
-  setup-env:
+  task5:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 5
+    
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Set up Python
+        
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
+ task-5-clean
           python-version: 3.11
 
       - name: Cache pip
@@ -50,4 +61,12 @@ jobs:
           python -c "import pandas, numpy, sklearn; print('Core ML packages OK')"
           python -c "import src; print('Project structure OK')"
 
-  
+
+          python-version: '3.9'
+          
+      - name: Install Task 5 packages
+        run: pip install mlflow scikit-learn pandas
+        
+      - name: Mark completion
+        run: echo "✅ Task 5 workflow passed"
+ main
