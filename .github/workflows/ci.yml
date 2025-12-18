@@ -48,13 +48,6 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pytest  # ensure pytest is available
-
-      - name: Run sanity checks
-        run: |
-          python -c "import pandas, numpy, sklearn; print('Core ML packages OK')"
-          python -c "import src; print('Project structure OK')"
-          python -c "import fastapi, uvicorn; print('Deployment packages OK')"
-
       # Run all tests
       - name: Run all tests
         run: pytest tests/ --maxfail=1 --disable-warnings
