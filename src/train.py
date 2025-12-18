@@ -1,132 +1,86 @@
-# src/train.py
+# src/api/main.py
 
-import pandas as pd
-import seaborn as sns
-import mlflow
-import mlflow.sklearn
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, confusion_matrix, RocCurveDisplay
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-import matplotlib.pyplot as plt
-from data_processing import load_data, build_preprocessing_pipeline
+from fastapi import FastAPI
+from pydantic import BaseModel
+import joblib
+import os
+import numpy as np
 
-# -----------------------------
-# 1. Load & preprocess data
-# -----------------------------
-def prepare_data(path: str, target_col='Target'):
-    """
-    Load CSV data, preprocess, and split into train/test sets.
-    """
-    df = load_data(path)
-    numeric_features = ['Amount', 'Value']  # adjust as needed
-    categorical_features = ['CurrencyCode', 'CountryCode', 'ProviderId', 'ProductCategory', 'ChannelId']
-    
-    pipeline = build_preprocessing_pipeline(numeric_features, categorical_features)
-    
-    X = pipeline.fit_transform(df.drop(columns=[target_col]))
-    y = df[target_col]
-    
-    return train_test_split(X, y, test_size=0.2, random_state=42)
+# -------------------------------
+# 1. Initialize app
+# -------------------------------
+app = FastAPI(
+    title="Credit Risk Prediction API",
+    version="1.0",
+    description="Predict high/low credit risk based on input features",
+)
 
-# -----------------------------
-# 2. Define models & hyperparams
-# -----------------------------
-def get_models():
-    """
-    Returns a dictionary of models and their hyperparameter grids.
-    """
-    models = {
-        "LogisticRegression": (LogisticRegression(max_iter=1000), {"C": [0.01, 0.1, 1, 10]}),
-        "DecisionTree": (DecisionTreeClassifier(), {"max_depth": [3, 5, 10, None]}),
-        "RandomForest": (RandomForestClassifier(), {"n_estimators": [50, 100], "max_depth": [5, 10]}),
-        "GradientBoosting": (GradientBoostingClassifier(), {"n_estimators": [50, 100], "learning_rate": [0.01, 0.1]})
-    }
-    return models
 
-# -----------------------------
-# 3. Evaluate model
-# -----------------------------
-def evaluate_model(model, X_test, y_test, plot_roc=True):
-    """
-    Returns a dictionary of evaluation metrics and optionally plots ROC curve.
-    """
-    y_pred = model.predict(X_test)
-    y_prob = model.predict_proba(X_test)[:, 1] if hasattr(model, "predict_proba") else None
-    
-    metrics = {
-        "accuracy": accuracy_score(y_test, y_pred),
-        "precision": precision_score(y_test, y_pred),
-        "recall": recall_score(y_test, y_pred),
-        "f1": f1_score(y_test, y_pred),
-        "roc_auc": roc_auc_score(y_test, y_prob) if y_prob is not None else None
-    }
-    
-    # Plot confusion matrix
-    cm = confusion_matrix(y_test, y_pred)
-    plt.figure(figsize=(5,4))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
-    plt.title("Confusion Matrix")
-    plt.xlabel("Predicted")
-    plt.ylabel("Actual")
-    plt.show()
-    
-    # Plot ROC curve
-    if plot_roc and y_prob is not None:
-        RocCurveDisplay.from_predictions(y_test, y_prob)
-        plt.show()
-    
-    return metrics
+# -------------------------------
+# 2. Define input schema
+# -------------------------------
+class CreditRiskInput(BaseModel):
+    Amount: float
+    Value: float
+    CurrencyCode: str
+    CountryCode: str
+    ProviderId: str
+    ProductCategory: str
+    ChannelId: str
 
-# -----------------------------
-# 4. Train & track models
-# -----------------------------
-def train_and_track_models(X_train, X_test, y_train, y_test):
-    """
-    Trains all models, logs metrics to MLflow, and registers the best model.
-    """
-    mlflow.set_experiment("Credit_Risk_Models")
-    
-    best_model_name = None
-    best_score = 0
-    best_model_obj = None
-    
-    for name, (model, params) in get_models().items():
-        print(f"Training {name}...")
-        
-        # Hyperparameter tuning
-        gs = GridSearchCV(model, params, cv=3, scoring='roc_auc')
-        gs.fit(X_train, y_train)
-        
-        # Evaluate
-        metrics = evaluate_model(gs.best_estimator_, X_test, y_test, plot_roc=False)
-        
-        # MLflow logging
-        with mlflow.start_run(run_name=name):
-            mlflow.log_params(gs.best_params_)
-            mlflow.log_metrics(metrics)
-            mlflow.sklearn.log_model(gs.best_estimator_, artifact_path="model", registered_model_name=name)
-        
-        print(f"{name} metrics:", metrics)
-        
-        # Track best model
-        if metrics["roc_auc"] and metrics["roc_auc"] > best_score:
-            best_score = metrics["roc_auc"]
-            best_model_name = name
-            best_model_obj = gs.best_estimator_
-    
-    print(f"Best model: {best_model_name} with ROC-AUC: {best_score}")
-    return best_model_name, best_model_obj
 
-# -----------------------------
-# 5. Main execution
-# -----------------------------
-if __name__ == "__main__":
-    # Load and split data
-    X_train, X_test, y_train, y_test = prepare_data("data/processed/rfm_model_ready.csv", target_col="HighRisk")
-    
-    # Train models and track with MLflow
-    best_model_name, best_model = train_and_track_models(X_train, X_test, y_train, y_test)
-    
-    print(f"Task 5 complete! Best model: {best_model_name}")
+# -------------------------------
+# 3. Load the trained model
+# -------------------------------
+MODEL_PATH = os.path.join("saved_models", "best_model.pkl")  # adjust if needed
+try:
+    model = joblib.load(MODEL_PATH)
+    print(f"✅ Loaded model from {MODEL_PATH}")
+except Exception as e:
+    print(f"❌ Failed to load model: {e}")
+    model = None
+
+
+# -------------------------------
+# 4. Root endpoint
+# -------------------------------
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to Credit Risk Prediction API"}
+
+
+# -------------------------------
+# 5. Predict endpoint
+# -------------------------------
+@app.post("/predict")
+def predict_credit_risk(input_data: CreditRiskInput):
+    if model is None:
+        return {"error": "Model not loaded."}
+
+    # Convert input to array for model
+    X = np.array(
+        [
+            [
+                input_data.Amount,
+                input_data.Value,
+                input_data.CurrencyCode,
+                input_data.CountryCode,
+                input_data.ProviderId,
+                input_data.ProductCategory,
+                input_data.ChannelId,
+            ]
+        ]
+    )
+
+    # Make prediction
+    try:
+        prediction = model.predict(X)[0]
+        prediction_proba = model.predict_proba(X)[0][1] if hasattr(model, "predict_proba") else None
+
+        result = {"prediction": int(prediction)}
+        if prediction_proba is not None:
+            result["probability"] = float(prediction_proba)
+        return result
+
+    except Exception as e:
+        return {"error": f"Prediction failed: {e}"}

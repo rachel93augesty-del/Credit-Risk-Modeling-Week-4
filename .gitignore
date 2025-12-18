@@ -1,54 +1,41 @@
-# =====================
-# Data files
-# =====================
-data/
-*.csv
-*.tsv
-*.parquet
-*.xlsx
-*.xls
-
-# =====================
-# Python
-# =====================
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.pkl
-*.log
+*.py[cod]
+*$py.class
 
 # Virtual environment
 venv/
+env/
+.venv/
 
-# =====================
-# Jupyter
-# =====================
-notebooks/.ipynb_checkpoints/
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
 
-# =====================
-# MLflow / outputs
-# =====================
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Data and model outputs
+data/
 output/
 saved_models/
-mlartifacts/
 mlruns/
+mlartifacts/
+wandb/
 
-# =====================
-# Images
-# =====================
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.svg
-*.bmp
-*.tiff
+# Logs and temp files
+*.log
+*.tmp
 
-# =====================
-# IDE / OS
-# =====================
+# IDE/editor settings
 .vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
 .DS_Store
 Thumbs.db
