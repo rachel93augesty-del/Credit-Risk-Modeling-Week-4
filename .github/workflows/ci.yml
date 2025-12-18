@@ -7,14 +7,16 @@ on:
       - task-1
       - task-2
       - task-3
-      - task-4   # added task-4
+      - task-4
+      - task-5-clean   # added Task 5 branch
   pull_request:
     branches:
       - main
       - task-1
       - task-2
       - task-3
-      - task-4   # added task-4
+      - task-4
+      - task-5-clean   # added Task 5 branch
 
 jobs:
   setup-env:
@@ -47,3 +49,5 @@ jobs:
         run: |
           python -c "import pandas, numpy, sklearn; print('Core ML packages OK')"
           python -c "import src; print('Project structure OK')"
+
+  
